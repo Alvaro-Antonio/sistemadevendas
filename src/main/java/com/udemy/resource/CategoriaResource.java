@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.udemy.models.Categoria;
 import com.udemy.services.CategoriaServices;
+import com.udemy.services.exceptions.ObjectNotFoundException;
 
 @RestController
 @RequestMapping(value = "/categorias")
@@ -17,7 +18,7 @@ public class CategoriaResource {
 	private CategoriaServices catService;
 	
 	@RequestMapping(value = "/{id}", method= RequestMethod.GET)
-	public ResponseEntity<?> find(@PathVariable Integer id) {
+	public ResponseEntity<?> find(@PathVariable Integer id) throws ObjectNotFoundException{
 			
 		Categoria c1 = catService.buscar(id);			
 		return ResponseEntity.ok(c1);
