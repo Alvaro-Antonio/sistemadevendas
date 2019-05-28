@@ -2,7 +2,9 @@ package com.udemy.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -12,8 +14,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Produto implements Serializable{
@@ -34,7 +38,13 @@ public class Produto implements Serializable{
 	joinColumns = @JoinColumn(name = "produto_id"),
 	inverseJoinColumns = @JoinColumn(name = "categoria_id")
 	)
+	
+
 	private List<Categoria> categorias = new ArrayList<>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "id.produto")
+	private Set<ItemPedido> itens = new HashSet<ItemPedido>();
 	
 	public Produto() {
 		// TODO Auto-generated constructor stub
@@ -46,7 +56,15 @@ public class Produto implements Serializable{
 		this.nome = nome;
 		this.preco = preco;
 	}
-
+	
+	@JsonIgnore
+	public List<Pedido> getPedidos(){
+		List<Pedido> pedidos = new ArrayList<Pedido>();
+		for(ItemPedido k : itens) {
+			pedidos.add(k.getPedido());
+		}
+		return pedidos;
+	}
 	public Integer getId() {
 		return id;
 	}
@@ -78,7 +96,14 @@ public class Produto implements Serializable{
 	public void setCategorias(List<Categoria> categorias) {
 		this.categorias = categorias;
 	}
+	public Set<ItemPedido> getItens() {
+		return itens;
+	}
 
+	public void setItens(Set<ItemPedido> itens) {
+		this.itens = itens;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -103,6 +128,8 @@ public class Produto implements Serializable{
 			return false;
 		return true;
 	}
+
+	
 	
 	
 }
